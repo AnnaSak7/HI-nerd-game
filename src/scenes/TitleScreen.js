@@ -56,7 +56,7 @@ export default class TitleScreen extends Phaser.Scene {
     console.log('characters are', characters);
 
     this.add
-      .text(400, 500, '⬅️ ➡️to select the character', {
+      .text(400, 500, '⬅️ ➡️ to select the character', {
         fontSize: '20px',
         fontFamily: '"Press Start 2P"',
       })

@@ -1,123 +1,118 @@
 import Phaser from 'phaser';
 
-import WebFontFile from './WebFontFile';
+import Bullet from '../Bullet';
+//import TitleScreen from './TitleScreen';
 
-//import HelloWorldScene from '../scenes/HelloWorldScene';
+const Keys = ['Julia', 'Alex', 'Redbull'];
+let player, playerControls, fireButton, game;
+let bulletTime = 0;
 
-const Alex_key = 'Alex';
-const Julia_key = 'Julia';
-const Redbull_key = 'Redbull';
-const selector_key = 'selector';
-
-let characters = [];
-let selectedCharacterIndex = 0;
-let characterSelector;
-let selectedIndex;
-
-export default class TitleScreen extends Phaser.Scene {
+export default class HelloWorldScene extends Phaser.Scene {
   constructor() {
-    super('title-screen');
+    super('hello-world');
   }
-  preload() {
-    const fonts = new WebFontFile(this.load, 'Press Start 2P');
-    this.load.addFile(fonts);
 
+  init(data) {
+    //setting values of received data
+    this.characterIndex = data.characterIndex;
+    if (data.characterIndex == null) {
+      this.characterIndex = 1;
+    }
+  }
+
+  preload() {
     this.load.image('bg', './assets/big-bg.png');
-    this.load.image('Alex_key', './assets/Alex128.png');
-    this.load.image('Julia_key', './assets/Julia128.png');
-    this.load.image('Redbull_key', './assets/redbull128.png');
-    this.load.image('selector_key', './assets/selector.png');
+    this.load.image(
+      `${Keys[this.characterIndex]}`,
+      `./assets/${Keys[this.characterIndex]}128.png`
+    );
+    this.load.spritesheet('invader1', './assets/c.png', {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.image('bullet', './assets/bullet.png');
   }
 
   create() {
+    console.log(Keys[this.characterIndex]);
     this.add.image(400, 300, 'bg');
-    const title = this.add.text(400, 100, 'Nerd Invaders', {
-      fontSize: '38px',
-      fontFamily: '"Press Start 2P"',
+
+    player = this.physics.add.sprite(100, 100, Keys[this.characterIndex]);
+    player.setCollideWorldBounds(true);
+    player.x = 400;
+    player.y = 500;
+    console.log('init is ', this.data);
+    this.load.image('bg', './assets/big-bg.png');
+
+    // this.load.spritesheet('invader1', './assets/c.png', {
+    //   frameWidth: 64,
+    //   frameHeight: 64,
+    // });
+    // var invader1 = this.add.group({
+    //   key: 'invader1',
+    //   frame: 0,
+    //   repeat: 8,
+    //   setXY: { x: 80, y: 3100, stepX: 60 },
+    // });
+
+    this.physics.add.existing(player);
+    playerControls = this.input.keyboard.createCursorKeys();
+
+    this.bullets = this.physics.add.group({
+      //the maximum number of bullets. 50 is fairly small and there will be pauses while firing waiting for fired bullets to recycle back into the available pool.
+      maxSize: -1,
+      classType: Bullet,
+      //Since the bullet needs to update its position runChildUpdate must be true.
+      runChildUpdate: true,
     });
-    title.setOrigin(0.5, 0.5);
 
-    const Alex = this.add.image(100, 100, 'Alex_key');
-    const Julia = this.add.image(100, 100, 'Julia_key');
-    const Redbull = this.add.image(100, 100, 'Redbull_key');
-    characterSelector = this.add.image(110, 110, 'selector_key');
+    this.physics.world.on('worldbounds', this.onWorldbounds, this);
 
-    // characterSelector.x = 400;
-    // characterSelector.y = 300;
-    Alex.x = 400;
-    Alex.y = 300;
-
-    Julia.x = 250;
-    Julia.y = 300;
-
-    Redbull.x = 550;
-    Redbull.y = 300;
-
-    characters.push(Julia);
-    characters.push(Alex);
-    characters.push(Redbull);
-    console.log('characters are', characters);
-
-    this.add
-      .text(400, 500, '⬅️ ➡️ to select the character', {
-        fontSize: '20px',
-        fontFamily: '"Press Start 2P"',
-      })
-      .setOrigin(0.5);
-
-    this.add
-      .text(400, 530, 'then press space to start', {
-        fontSize: '20px',
-        fontFamily: '"Press Start 2P"',
-      })
-      .setOrigin(0.5);
-
-    this.input.keyboard.once('keydown-SPACE', () => {
-      console.log('space down');
-      // sending data to next page
-      this.scene.start('hello-world', {
-        characterIndex: selectedIndex,
-      });
-    });
-    this.cursors = this.input.keyboard.createCursorKeys();
-
-    this.selectCharacter(1);
-  }
-
-  // handleContinue() {
-  //   this.scene.start('hello-world', HelloWorldScene);
-  // }
-  selectCharacter(index) {
-    const currentCharacter = characters[selectedCharacterIndex];
-
-    const character = characters[index];
-
-    characterSelector.x = character.x;
-    characterSelector.y = character.y;
-
-    selectedCharacterIndex = index;
-  }
-
-  selectNextCharacter(change) {
-    selectedIndex = selectedCharacterIndex + change;
-    if (selectedIndex >= characters.length) {
-      selectedIndex = 0;
-    } else if (selectedIndex < 0) {
-      selectedIndex = characters.length - 1;
-    }
-    this.selectCharacter(selectedIndex);
-
-    console.log('index is', selectedIndex);
+    fireButton = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
   }
 
   update() {
-    const rightPressed = Phaser.Input.Keyboard.JustDown(this.cursors.right);
-    const leftPressed = Phaser.Input.Keyboard.JustDown(this.cursors.left);
+    this.movePlayer();
 
-    if (rightPressed) {
-      this.selectNextCharacter(1);
-    } else if (leftPressed) {
-      this.selectNextCharacter(-1);
+    if (fireButton.isDown) {
+      this.fireBullet();
     }
   }
+
+  movePlayer() {
+    if (playerControls.left.isDown) {
+      player.x -= 10;
+    } else if (playerControls.right.isDown) {
+      player.x += 10;
+    }
+  }
+
+  fireBullet() {
+    const bullet = this.bullets.get();
+    if (bullet) {
+      bullet.shoot(player.x, player.y - 150);
+    }
+  }
+  onWorldbounds(body) {
+    const isBullet = this.bullets.contains(body.gameObject);
+    if (isBullet) {
+      body.gameObject.deactivate();
+    }
+  }
+  //   fireBullet() {
+  //     //  To avoid them being allowed to fire too fast we set a time limit
+  //     if (this.time.now > bulletTime) {
+  //       //  Grab the first bullet we can from the pool
+  //       bullets = bullets.getFirstExists(false);
+
+  //       if (bullets) {
+  //         //  And fire it
+  //         bullets.reset(player.x, player.y + 8);
+  //         bullets.body.velocity.y = -400;
+  //         bulletTime = this.time.now + 200;
+  //       }
+  //     }
+  //   }
 }

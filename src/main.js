@@ -17,7 +17,7 @@ const config = {
       debug: true,
     },
   },
-  scene: [TitleScreen, HelloWorldScene],
+  scene: [TitleScreen, HelloWorldScene, GameOverScene],
   render: {
     pixelArt: true,
   },
@@ -28,5 +28,5 @@ const config = {
 const game = new Phaser.Game(config);
 
 //game.scene.add('titlescreen', TitleScreen);
-game.scene.start('titlescreen');
-game.scene.add('over', GameOverScene);
+game.scene.start('title-screen');
+//game.scene.add('over', GameOverScene);

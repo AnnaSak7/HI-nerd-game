@@ -41,6 +41,8 @@ export default class HelloWorldScene extends Phaser.Scene {
     this.load.audio('bulletSound', './assets/bulletSound.wav');
     this.load.audio('bombSound', './assets/explosion.wav');
 
+    this.load.image('bg', './assets/big-bg.png');
+
     this.load.spritesheet('invader0', './assets/html.png', {
       frameWidth: 32,
       frameHeight: 32,
@@ -89,7 +91,6 @@ export default class HelloWorldScene extends Phaser.Scene {
     });
     this.load.image('bomb', './assets/bomb.png');
 
-    this.load.image('bg', './assets/big-bg.png');
     this.load.image(
       `${Keys[this.characterIndex]}`,
       `./assets/${Keys[this.characterIndex]}128.png`

@@ -6,10 +6,12 @@ import TitleScreen from './scenes/TitleScreen';
 import HelloWorldScene from './scenes/HelloWorldScene';
 
 import GameOverScene from './scenes/game-over.js';
+import InputPanel from './scenes/LeaderBoard';
+import Highscore from './scenes/Highscore';
 
 //import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
-import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
+//import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -25,7 +27,7 @@ const config = {
       debug: true,
     },
   },
-  scene: [TitleScreen, HelloWorldScene, GameOverScene],
+  scene: [TitleScreen, HelloWorldScene, GameOverScene, InputPanel, Highscore],
   render: {
     pixelArt: true,
   },

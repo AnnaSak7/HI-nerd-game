@@ -24,7 +24,7 @@ import Phaser from 'phaser';
 //import { LeaderBoard } from 'phaser3-rex-plugins/plugins/firebase-components'
 
 // Import the functions you need from the SDKs you need
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js';
+import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
   collection,
@@ -32,7 +32,7 @@ import {
   doc,
   deleteDoc,
   getDocs,
-} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-firestore.js';
+} from 'firebase/firestore/lite';
 // import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-analytics.js";
 
 const firebaseConfig = {
@@ -66,9 +66,9 @@ const db = getFirestore(app);
 // }
 
 export default class LeaderBoard extends Phaser.Scene {
-    constructor(){
-        super('leaderboard')
-    }
+  constructor() {
+    super('leaderboard');
+  }
 
-    init()
+  //init()
 }

@@ -35,10 +35,10 @@ export default class TitleScreen extends Phaser.Scene {
   create() {
     sky = this.add.tileSprite(500, 100, 1024, 1024, 'bg');
 
-    spaceSound = this.sound.add('space', { volume: 0.2 });
+    spaceSound = this.sound.add('space', { volume: 0.1 });
     spaceSound.play();
 
-    const title = this.add.text(400, 100, 'Nerd Invaders', {
+    const title = this.add.text(400, 100, 'NERD INVADERS', {
       fontSize: '38px',
       fontFamily: '"Press Start 2P"',
     });
@@ -49,8 +49,6 @@ export default class TitleScreen extends Phaser.Scene {
     const Redbull = this.add.image(100, 100, 'Redbull_key');
     characterSelector = this.add.image(110, 110, 'selector_key');
 
-    // characterSelector.x = 400;
-    // characterSelector.y = 300;
     Alex.x = 400;
     Alex.y = 300;
 
@@ -66,14 +64,14 @@ export default class TitleScreen extends Phaser.Scene {
     console.log('characters are', characters);
 
     this.add
-      .text(400, 500, '⬅️ ➡️ to select the character', {
+      .text(400, 500, '⬅️ ➡️ TO SELECT A CHARACTER', {
         fontSize: '20px',
         fontFamily: '"Press Start 2P"',
       })
       .setOrigin(0.5);
 
     this.add
-      .text(400, 530, 'then press space to start', {
+      .text(400, 530, 'PRESS SPACE TO START', {
         fontSize: '20px',
         fontFamily: '"Press Start 2P"',
       })
@@ -127,6 +125,13 @@ export default class TitleScreen extends Phaser.Scene {
       this.selectNextCharacter(1);
     } else if (leftPressed) {
       this.selectNextCharacter(-1);
+    }
+
+    const shiftPressed = Phaser.Input.Keyboard.JustDown(this.cursors.shift);
+    if (shiftPressed) {
+      spaceSound.stop();
+    } else {
+      spaceSound.play();
     }
   }
 }

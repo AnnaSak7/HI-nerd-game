@@ -19,7 +19,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: false,
-      // debug: true,
+      debug: false,
     },
   },
   scene: [TitleScreen, HelloWorldScene, GameOverScene, Highscore, InputPanel],

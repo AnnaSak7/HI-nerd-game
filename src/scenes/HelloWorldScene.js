@@ -257,9 +257,15 @@ export default class HelloWorldScene extends Phaser.Scene {
       function (playerCollide, bombCollide) {
         livesLeft -= 1;
         addLifeTextToTheScreen.text = lifeStringOnScreen + livesLeft;
-
         bombSound.play();
         bombCollide.destroy();
+        explosion = this.add.sprite(bombCollide.x, bombCollide.y, 'explosion');
+
+        explosion.play({ key: 'explosion', hideOnComplete: true }, false);
+        explosion.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          explosion.destroy();
+        });
+
         if (livesLeft === 0) {
           this.scene.start('game-over', [score, scoreStringOnScreen]);
         }
